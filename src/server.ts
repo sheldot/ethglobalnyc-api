@@ -3,7 +3,8 @@ import express, { Request, Response } from "express";
 import { createServer } from "http";
 
 import env from "./env";
-import setUpRpc from "./rpc-setup";
+import { CHAIN_ID } from "./interfaces";
+import { processAddressType } from "./rpc-setup";
 
 const app = express();
 
@@ -22,7 +23,18 @@ app.get(
     console.log(Object.keys(req));
     console.log(req.body);
 
-    return res.send(await setUpRpc());
+    // Shouuld be an address = 0x
+    // 0xd3CdA913deB6f67967B99D67aCDFa1712C293601
+
+    // Shouuld be a contract = 0x606060405236....
+    // 0x6C8f2A135f6ed072DE4503Bd7C4999a1a17F824B
+
+    return res.send(
+      await processAddressType(
+        CHAIN_ID.MAINNET,
+        "0x6C8f2A135f6ed072DE4503Bd7C4999a1a17F824B"
+      )
+    );
   }
 );
 

@@ -1,4 +1,5 @@
 import Web3 from "web3";
+
 import pocketJS from "@pokt-network/pocket-js";
 
 import env from "./env";
@@ -17,27 +18,32 @@ const rpc = {
 };
 
 interface IProcessAddressTypeResponse {
-  data: ADDRESS_TYPES;
+  data: ADDRESS_TYPES | Error | null;
   message: RESPONSE_MESSAGES;
 }
 
 export const processAddressType = async (
   chainId: CHAIN_ID,
   address: string
-): IProcessAddressTypeResponse => {
+): Promise<IProcessAddressTypeResponse> => {
   let requestPayload: IProcessAddressTypeResponse = {
     data: null,
     message: RESPONSE_MESSAGES.UNRESOLVED,
   };
-  // EOA = "EOA",
 
   try {
-    // await web3.eth.getBlock("0xe54440");
+    // Way to determine if the data is full = is a contract
+    const checkDataAtAddress = await rpc[chainId].eth.getCode(address);
+    console.log(checkDataAtAddress);
+
     requestPayload = {
-      data: await rpc[chainId].eth.getCode(address),
+      data:
+        checkDataAtAddress === "0x"
+          ? ADDRESS_TYPES.EOA
+          : ADDRESS_TYPES.CONTRACT_UNSPECIFIED,
       message: RESPONSE_MESSAGES.SUCCESS,
     };
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
     requestPayload = {
       data: e,
