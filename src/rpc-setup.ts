@@ -33,8 +33,14 @@ export const processAddressType = async (
 
   try {
     // Way to determine if the data is full = is a contract
+    // For example:
+    // 0xd3CdA913deB6f67967B99D67aCDFa1712C293601
+    // Should be an address = 0x
+
+    // 0x6C8f2A135f6ed072DE4503Bd7C4999a1a17F824B
+    // Shouuld be a contract = 0x606060405236....
+
     const checkDataAtAddress = await rpc[chainId].eth.getCode(address);
-    console.log(checkDataAtAddress);
 
     requestPayload = {
       data:
