@@ -1,6 +1,9 @@
 import AWS from "aws-sdk";
 
 import env from "../utils/env";
+import { DB_OBJECTS } from "../utils/interfaces";
+import { getDbLocationString } from "../utils/misc";
+
 const BUCKET_NAME = "ethglobal-nyc-hackathon";
 
 // Construct the s3 representation of the the bucket
@@ -14,15 +17,15 @@ const _getS3 = () => {
 
 // Add an element to the location
 export const addObjectToDb = async (
-  dbLocation: string,
+  dbLocation: DB_OBJECTS,
   objectId: string,
   dataObject: any
 ) => {
   const s3 = _getS3();
 
   let destparams = {
-    Bucket: `${BUCKET_NAME}/${dbLocation}`,
-    Key: `${objectId}.json`,
+    Bucket: `${BUCKET_NAME}/${getDbLocationString(dbLocation)}`,
+    Key: `${objectId}`,
     Body: JSON.stringify(dataObject),
     ContentType: "application/json",
     ContentDisposition: "attachment",
@@ -39,7 +42,7 @@ export const addObjectToDb = async (
 };
 
 // Get a specific entry
-export const getDbObject = async (dbLocation: string, objectId: string) => {
+export const getDbObject = async (dbLocation: DB_OBJECTS, objectId: string) => {
   const s3 = _getS3();
   let parsedObject = {};
 
@@ -47,7 +50,7 @@ export const getDbObject = async (dbLocation: string, objectId: string) => {
     const fileBlob = await s3
       .getObject({
         Bucket: BUCKET_NAME,
-        Key: `${dbLocation}/${objectId}.json`,
+        Key: `${getDbLocationString(dbLocation)}/${objectId}`,
       })
       .promise();
 
@@ -63,10 +66,13 @@ export const getDbObject = async (dbLocation: string, objectId: string) => {
 };
 
 // Get all the objects in a particular location
-export const getAllDbObjects = async (dbLocation: string) => {
+export const getAllDbObjects = async (dbLocation: DB_OBJECTS) => {
   const s3 = _getS3();
   const folderContents = await s3
-    .listObjectsV2({ Bucket: BUCKET_NAME, Prefix: dbLocation + "/" })
+    .listObjectsV2({
+      Bucket: BUCKET_NAME,
+      Prefix: getDbLocationString(dbLocation) + "/",
+    })
     .promise();
   const fileNames = folderContents.Contents?.map((file) => file.Key);
 

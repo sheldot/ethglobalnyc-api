@@ -12,7 +12,7 @@ export const getTransactions = async (
   chainId: number,
   address: string
 ): Promise<IAllAddressesResponse> => {
-  const constructedUrl = `https://api.covalenthq.com/v1/${chainId}/address/${address}/transactions_v2/?key=${env.blockchain.dataApiKey}`;
+  const constructedUrl = `https://api.covalenthq.com/v1/${chainId}/address/${address}/transactions_v2/?no-logs=true&key=${env.blockchain.dataApiKey}`;
   console.log("constructedUrl");
   console.log(constructedUrl);
   return axios.get(constructedUrl);

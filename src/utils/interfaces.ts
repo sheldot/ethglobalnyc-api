@@ -25,17 +25,20 @@ export enum RESPONSE_MESSAGES {
 }
 
 export enum DB_OBJECTS {
-  addressWatcher = "address_watchers",
-  address = "addresses",
-  app = "apps",
-  chainAddress = "chain_addresses",
-  contractAbi = "contract_abis",
-  contractAbiFunctionEncoding = "contract_abi_function_encodings",
-  chain = "chains",
-  tag = "tags",
-  transaction = "transactions",
-  transactionFunction = "transaction_functions",
-  transactionAddressReference = "transaction_address_references",
-  userAddress = "user_addresses",
-  user = "users",
+  _junk = "bla", // Store stuff just to throw away
+
+  addressWatcher = "address_watchers", // id: userid*uuid*chain_addr
+  address = "addresses", // id: addr
+  app = "apps", // id: userid*chain_name*uuid
+  chainAddress = "chain_addresses", // id: addr
+  chainAddressType = "chain_address_types", // id: addr
+  contractAbi = "contract_abis", // id: addr
+  contractAbiFunctionEncoding = "contract_abi_function_encodings", // id: method sig
+  chain = "chains", // id: chain name
+  tag = "tags", // id: uuid
+  transaction = "transactions", // id: hash
+  transactionFunction = "transaction_functions", // id: method sig
+  transactionAddressReference = "transaction_address_references", // id: uuid
+  userAddress = "user_addresses", // id: addr
+  user = "users", // id: addr
 }
