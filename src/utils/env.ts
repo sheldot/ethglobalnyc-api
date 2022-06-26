@@ -10,9 +10,10 @@ interface IBlockchainConfig {
 }
 
 interface IDatabaseConfig {
-  username: string;
-  password: string;
   accessUrl: string;
+  password: string;
+  username: string;
+  version: string;
 }
 
 interface IEnvConfig {
@@ -31,9 +32,10 @@ const configSet = {
       rpcPortalId: process.env.LOCAL_RPC_GATEWAY_ID,
     },
     db: {
-      username: process.env.LOCAL_STORJ_ACCESS_KEY_ID,
-      password: process.env.LOCAL_STORJ_SECRET,
       accessUrl: process.env.LOCAL_STORJ_GATEWAY_URL,
+      password: process.env.LOCAL_STORJ_SECRET,
+      username: process.env.LOCAL_STORJ_ACCESS_KEY_ID,
+      version: process.env.LOCAL_DB_VERSION,
     },
   } as IEnvConfig,
 
@@ -46,9 +48,10 @@ const configSet = {
       rpcPortalId: process.env.PROD_RPC_GATEWAY_ID,
     },
     db: {
-      username: process.env.PROD_STORJ_ACCESS_KEY_ID,
-      password: process.env.PROD_STORJ_SECRET,
       accessUrl: process.env.PROD_STORJ_GATEWAY_URL,
+      password: process.env.PROD_STORJ_SECRET,
+      username: process.env.PROD_STORJ_ACCESS_KEY_ID,
+      version: process.env.PROD_DB_VERSION,
     },
   } as IEnvConfig,
 };

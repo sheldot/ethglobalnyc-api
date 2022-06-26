@@ -23,3 +23,19 @@ export enum RESPONSE_MESSAGES {
   SUCCESS = "success",
   UNRESOLVED = "unresolved",
 }
+
+export enum DB_OBJECTS {
+  addressWatcher = "address_watchers",
+  address = "addresses",
+  app = "apps",
+  chainAddress = "chain_addresses",
+  contractAbi = "contract_abis",
+  contractAbiFunctionEncoding = "contract_abi_function_encodings",
+  chain = "chains",
+  tag = "tags",
+  transaction = "transactions",
+  transactionFunction = "transaction_functions",
+  transactionAddressReference = "transaction_address_references",
+  userAddress = "user_addresses",
+  user = "users",
+}
