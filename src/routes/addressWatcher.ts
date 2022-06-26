@@ -12,33 +12,45 @@ const addAddressWatcherRoutes = (app: Express) => {
       console.log("_+_+_ req.query");
       console.log(req.query);
 
-      if (
-        !("userAddress" in req.query) ||
-        typeof req.query["userAddress"] !== "string"
-      ) {
+      if (!("app_id" in req.query) || typeof req.query["app_id"] !== "string") {
         return res.status(404).send({
-          data: "Add an user address",
+          data: "Add an app id",
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else {
-        // get all the apps
-        const dbLocation = DB_OBJECTS.app;
+        // get all the address watchers
+        const dbLocation = DB_OBJECTS.addressWatcher;
         const returnedAfterUpload = await getAllDbObjects(dbLocation);
 
         // filter out the ones that only have user in the first part
         const reducedList = returnedAfterUpload
-          ? returnedAfterUpload.filter((appName: any) => {
-              if (appName) {
-                let appUserAddress = appName.split("/")[1];
-                appUserAddress = appUserAddress.split("*")[0];
+          ? returnedAfterUpload.filter((addressWatcherId: any) => {
+              if (addressWatcherId) {
+                let currentAppId = addressWatcherId.split("/")[1];
+                const idParts = currentAppId.split("*");
+                currentAppId = `${idParts[1]}*${idParts[2]}*${idParts[3]}`;
 
-                return req.query.userAddress === appUserAddress;
+                return req.query["app_id"] === currentAppId;
               }
               return false;
             })
           : [];
 
-        return res.send(reducedList);
+        const populateList = reducedList.map((addressWatcherId: any) => {
+          let coreId = addressWatcherId.split("/")[1];
+          const idParts = coreId.split("*");
+
+          return {
+            parts: {
+              trackingAddress: idParts[0],
+              userAddress: idParts[1],
+              chain: idParts[2],
+              uuid: idParts[3],
+            },
+            fullId: coreId,
+          };
+        });
+        return res.send(populateList);
       }
     }
   );
@@ -56,8 +68,8 @@ const addAddressWatcherRoutes = (app: Express) => {
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else {
-        // get all the apps
-        const dbLocation = DB_OBJECTS.app;
+        // get a specific address watcher
+        const dbLocation = DB_OBJECTS.addressWatcher;
         const returnedAfterUpload = await getDbObject(
           dbLocation,
           req.query["id"]
@@ -82,42 +94,63 @@ const addAddressWatcherRoutes = (app: Express) => {
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else if (
-        !("trackingAddress" in req.body) ||
-        typeof req.body["trackingAddress"] !== "string"
+        !("tracking_address" in req.body) ||
+        typeof req.body["tracking_address"] !== "string"
       ) {
         return res.status(404).send({
           data: "Add a tracking address",
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else if (
-        !("userAddress" in req.body) ||
-        typeof req.body["userAddress"] !== "string"
+        !("user_address" in req.body) ||
+        typeof req.body["user_address"] !== "string"
       ) {
         return res.status(404).send({
           data: "Add a user address",
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else if (
-        !("appId" in req.body) ||
-        typeof req.body["appId"] !== "string"
+        !("app_id" in req.body) ||
+        typeof req.body["app_id"] !== "string"
       ) {
         return res.status(404).send({
           data: "Add an app id",
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else {
-        const { trackingAddress, appId, userAddress } = req.body;
+        const allApps = await getAllDbObjects(DB_OBJECTS.app);
+
+        // filter out the ones that only have user in the first part
+        const reducedList = allApps
+          ? allApps.filter((appName: any) => {
+              if (appName) {
+                let appCoreId = appName.split("/")[1];
+
+                return req.body["app_id"] === appCoreId;
+              }
+              return false;
+            })
+          : [];
+
+        if (reducedList.length === 0) {
+          return res.status(404).send({
+            data: "App id not found",
+            message: RESPONSE_MESSAGES.ERROR,
+          });
+        }
+
+        const { tracking_address, app_id, user_address } = req.body;
 
         // Create an address watcher
         const dbLocation = DB_OBJECTS.addressWatcher;
 
         // id = trackingAddress*appId
         // appId = userAddress*uuid
-        const objectId = `${trackingAddress}*${appId}`;
+        const objectId = `${tracking_address}*${app_id}`;
 
         const returnedAfterUpload = await addObjectToDb(dbLocation, objectId, {
-          trackingAddress,
-          author: userAddress,
+          trackingAddress: tracking_address,
+          author: user_address,
         });
 
         return res.send(returnedAfterUpload);

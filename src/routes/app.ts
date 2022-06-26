@@ -13,8 +13,8 @@ const addAppRoutes = (app: Express) => {
       console.log(req.query);
 
       if (
-        !("userAddress" in req.query) ||
-        typeof req.query["userAddress"] !== "string"
+        !("user_address" in req.query) ||
+        typeof req.query["user_address"] !== "string"
       ) {
         return res.status(404).send({
           data: "Add an user address",
@@ -32,7 +32,7 @@ const addAppRoutes = (app: Express) => {
                 let appUserAddress = appName.split("/")[1];
                 appUserAddress = appUserAddress.split("*")[0];
 
-                return req.query.userAddress === appUserAddress;
+                return req.query["user_address"] === appUserAddress;
               }
               return false;
             })
@@ -72,7 +72,7 @@ const addAppRoutes = (app: Express) => {
       console.log("_+_+_ req.body");
       console.log(Object.keys(req));
       console.log(req.body);
-      console.log("userAddress" in req.body);
+      console.log("user_address" in req.body);
 
       if (!req.body) {
         return res.status(404).send({
@@ -80,24 +80,24 @@ const addAppRoutes = (app: Express) => {
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else if (
-        !("userAddress" in req.body) ||
-        typeof req.body["userAddress"] !== "string"
+        !("user_address" in req.body) ||
+        typeof req.body["user_address"] !== "string"
       ) {
         return res.status(404).send({
           data: "Add a user address",
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else if (
-        !("appName" in req.body) ||
-        typeof req.body["appName"] !== "string"
+        !("app_name" in req.body) ||
+        typeof req.body["app_name"] !== "string"
       ) {
         return res.status(404).send({
           data: "Add an app name",
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else if (
-        !("appDescription" in req.body) ||
-        typeof req.body["appDescription"] !== "string"
+        !("app_description" in req.body) ||
+        typeof req.body["app_description"] !== "string"
       ) {
         return res.status(404).send({
           data: "Add an app description",
@@ -113,18 +113,18 @@ const addAppRoutes = (app: Express) => {
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else {
-        const { userAddress, appName, appDescription, chain } = req.body;
+        const { user_address, app_name, app_description, chain } = req.body;
 
         // Create an app
         const dbLocation = DB_OBJECTS.app;
 
         // id = userid*uuid
-        const objectId = `${userAddress}*${chain}*${uuidv4()}`;
+        const objectId = `${user_address}*${chain}*${uuidv4()}`;
 
         const returnedAfterUpload = await addObjectToDb(dbLocation, objectId, {
-          name: appName,
-          description: appDescription,
-          author: userAddress,
+          name: app_name,
+          description: app_description,
+          author: user_address,
           chain,
         });
 
