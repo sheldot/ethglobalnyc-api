@@ -2,9 +2,8 @@ import "reflect-metadata";
 import express, { Request, Response } from "express";
 import { createServer } from "http";
 
-import env from "./env";
-import { CHAIN_ID, RESPONSE_MESSAGES } from "./interfaces";
-import { processAddressType } from "./rpc-setup";
+import env from "./utils/env";
+import { CHAIN_NAME, RESPONSE_MESSAGES } from "./utils/interfaces";
 
 const app = express();
 
@@ -17,14 +16,14 @@ app.get("/", (req: Request, res: Response): Response => {
 });
 
 app.get(
-  "/v0/transaction",
+  "/v0/app-workers",
   async (req: Request, res: Response): Promise<Response> => {
     console.log("_+_+_ req");
     console.log(Object.keys(req));
     console.log(req.body);
     console.log(Object.keys(req));
     console.log(req.query);
-    console.log((<any>Object).values(CHAIN_ID));
+    console.log((<any>Object).values(CHAIN_NAME));
 
     if (!("address" in req.query) || typeof req.query["address"] !== "string") {
       return res.status(404).send({
@@ -34,16 +33,14 @@ app.get(
     } else if (
       !("chain" in req.query) ||
       typeof req.query["chain"] !== "string" ||
-      !(<any>Object).values(CHAIN_ID).includes(req.query["chain"])
+      !(<any>Object).values(CHAIN_NAME).includes(req.query["chain"])
     ) {
       return res.status(404).send({
         data: "Add a valid chain",
         message: RESPONSE_MESSAGES.ERROR,
       });
     } else {
-      return res.send(
-        await processAddressType(CHAIN_ID.MAINNET, req.query["address"])
-      );
+      return res.send("yoyoyoy");
     }
   }
 );

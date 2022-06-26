@@ -6,11 +6,17 @@ export enum ADDRESS_TYPES {
   EOA = "EOA",
 }
 
-export enum CHAIN_ID {
+export enum CHAIN_NAME {
   MAINNET = "mainnet",
   POLYGON = "polygon",
-  AVAX = "avalanche",
+  // AVAX = "avalanche",
 }
+
+export const CHAIN_ID = {
+  [CHAIN_NAME.MAINNET]: 1,
+  [CHAIN_NAME.POLYGON]: 137,
+  // [CHAIN_NAME.AVAX]: 43114,
+};
 
 export enum RESPONSE_MESSAGES {
   ERROR = "error",

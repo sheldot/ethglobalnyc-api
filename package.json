@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@pokt-network/pocket-js": "^0.8.0-rc",
+    "aws-sdk": "^2.1162.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "reflect-metadata": "^0.1.13",
