@@ -48,7 +48,7 @@ const addAppRoutes = (app: Express) => {
     console.log("_+_+_ req.query");
     console.log(req.query);
 
-    if (!("id" in req.query) || typeof req.query["id"] !== "string") {
+    if (!("app_id" in req.query) || typeof req.query["app_id"] !== "string") {
       return res.status(404).send({
         data: "Add an app id",
         message: RESPONSE_MESSAGES.ERROR,
@@ -58,7 +58,7 @@ const addAppRoutes = (app: Express) => {
       const dbLocation = DB_OBJECTS.app;
       const returnedAfterUpload = await getDbObject(
         dbLocation,
-        req.query["id"]
+        req.query["app_id"]
       );
 
       return res.send(returnedAfterUpload);
