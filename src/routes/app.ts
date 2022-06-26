@@ -14,6 +14,7 @@ const addAppRoutes = (app: Express) => {
 
       if (
         !("user_address" in req.query) ||
+        !req.query["user_address"] ||
         typeof req.query["user_address"] !== "string"
       ) {
         return res.status(404).send({
@@ -32,7 +33,10 @@ const addAppRoutes = (app: Express) => {
                 let appUserAddress = appName.split("/")[1];
                 appUserAddress = appUserAddress.split("*")[0];
 
-                return req.query["user_address"] === appUserAddress;
+                return (
+                  (req.query["user_address"] as string)?.toLowerCase() ===
+                  appUserAddress.toLowerCase()
+                );
               }
               return false;
             })

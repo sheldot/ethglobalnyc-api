@@ -2,6 +2,7 @@ import { Express, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 
 import { addObjectToDb, getAllDbObjects, getDbObject } from "../services/storj";
+import { getAddressWatchersForAppId } from "../utils/dto";
 import { CHAIN_NAME, DB_OBJECTS, RESPONSE_MESSAGES } from "../utils/interfaces";
 
 const addAddressWatcherRoutes = (app: Express) => {
@@ -18,39 +19,12 @@ const addAddressWatcherRoutes = (app: Express) => {
           message: RESPONSE_MESSAGES.ERROR,
         });
       } else {
-        // get all the address watchers
-        const dbLocation = DB_OBJECTS.addressWatcher;
-        const returnedAfterUpload = await getAllDbObjects(dbLocation);
-
         // filter out the ones that only have user in the first part
-        const reducedList = returnedAfterUpload
-          ? returnedAfterUpload.filter((addressWatcherId: any) => {
-              if (addressWatcherId) {
-                let currentAppId = addressWatcherId.split("/")[1];
-                const idParts = currentAppId.split("*");
-                currentAppId = `${idParts[1]}*${idParts[2]}*${idParts[3]}`;
+        const cleanedList = await getAddressWatchersForAppId(
+          req.query["app_id"]
+        );
 
-                return req.query["app_id"] === currentAppId;
-              }
-              return false;
-            })
-          : [];
-
-        const populateList = reducedList.map((addressWatcherId: any) => {
-          let coreId = addressWatcherId.split("/")[1];
-          const idParts = coreId.split("*");
-
-          return {
-            parts: {
-              trackingAddress: idParts[0],
-              userAddress: idParts[1],
-              chain: idParts[2],
-              uuid: idParts[3],
-            },
-            fullId: coreId,
-          };
-        });
-        return res.send(populateList);
+        return res.send(cleanedList);
       }
     }
   );

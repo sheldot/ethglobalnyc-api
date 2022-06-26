@@ -24,11 +24,18 @@ export enum RESPONSE_MESSAGES {
   UNRESOLVED = "unresolved",
 }
 
+export enum TRANSACTION_REFERENCE_TYPE {
+  SENDER = "sender",
+  TARGET = "target",
+  FACILITATOR = "facilitator",
+}
+
 export enum DB_OBJECTS {
   _junk = "bla", // Store stuff just to throw away
 
   addressWatcher = "address_watchers", // id: userid*uuid*chain_addr
   address = "addresses", // id: addr
+  addressList = "address_list", // id: tracking addr
   app = "apps", // id: userid*chain_name*uuid
   chainAddress = "chain_addresses", // id: addr
   chainAddressType = "chain_address_types", // id: addr
@@ -36,7 +43,7 @@ export enum DB_OBJECTS {
   contractAbiFunctionEncoding = "contract_abi_function_encodings", // id: method sig
   chain = "chains", // id: chain name
   tag = "tags", // id: uuid
-  transaction = "transactions", // id: hash
+  transaction = "transactions", // id: hash*trackingAddr
   transactionFunction = "transaction_functions", // id: method sig
   transactionAddressReference = "transaction_address_references", // id: uuid
   userAddress = "user_addresses", // id: addr

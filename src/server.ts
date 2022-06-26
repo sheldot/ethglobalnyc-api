@@ -6,6 +6,7 @@ import { createServer } from "http";
 import env from "./utils/env";
 
 import addAppRoutes from "./routes/app";
+import addTransactionRoutes from "./routes/transaction";
 import addAddressWatcherRoutes from "./routes/addressWatcher";
 
 const app = express();
@@ -20,6 +21,7 @@ app.get("/", (req: Request, res: Response): Response => {
 });
 
 addAppRoutes(app);
+addTransactionRoutes(app);
 addAddressWatcherRoutes(app);
 
 const start = async (): Promise<void> => {
